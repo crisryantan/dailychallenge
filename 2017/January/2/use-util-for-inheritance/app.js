@@ -2,6 +2,9 @@ var EventEmitter = require( 'events' );
 var util         = require( 'util' );
 
 function Greetr () {
+	// Ensures that my object created from this function constructor has everything
+	// in object created from an event emitter
+	EventEmitter.call( this );
 	this.greeting = 'Hello World';
 }
 
