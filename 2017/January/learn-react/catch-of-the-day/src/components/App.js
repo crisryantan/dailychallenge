@@ -12,6 +12,7 @@ class App extends React.Component {
 		super();
 
 		this.addFish     = this.addFish.bind(this);
+		this.updateFish  = this.updateFish.bind(this);
 		this.loadSamples = this.loadSamples.bind(this);
 		this.addToOrder  = this.addToOrder.bind(this);
 
@@ -41,7 +42,6 @@ class App extends React.Component {
 	}
 
 	componentWillUpdate ( nextProps, nextState ) {
-		console.log( { nextProps, nextState } )
 		localStorage.setItem( `order-${this.props.params.storeId}`,
 			JSON.stringify( nextState.order ) );
 	}
@@ -57,6 +57,12 @@ class App extends React.Component {
 		const timestamp = Date.now();
 		fishes[ `fish-${timestamp}` ] = fish;
 		// set state
+		this.setState( { fishes } );
+	}
+
+	updateFish( key, updatedFish ) {
+		const fishes = { ...this.state.fishes };
+		fishes[ key ] = updatedFish;
 		this.setState( { fishes } );
 	}
 
@@ -98,11 +104,13 @@ class App extends React.Component {
 					</ul>
 				</div>
 				<Order
-					fishes={this.state.fishes}
-					order={this.state.order}
-					params={this.props.params}
+					fishes={ this.state.fishes }
+					order={ this.state.order }
+					params={ this.props.params }
 				/>
 				<Inventory
+					fishes={ this.state.fishes }
+					updateFish={ this.updateFish }
 					loadSamples={ this.loadSamples }
 					addFish={ this.addFish }
 				/>
