@@ -11,10 +11,12 @@ class App extends React.Component {
 	constructor () {
 		super();
 
-		this.addFish     = this.addFish.bind(this);
-		this.updateFish  = this.updateFish.bind(this);
-		this.loadSamples = this.loadSamples.bind(this);
-		this.addToOrder  = this.addToOrder.bind(this);
+		this.addFish         = this.addFish.bind(this);
+		this.removeFish      = this.removeFish.bind(this);
+		this.updateFish      = this.updateFish.bind(this);
+		this.loadSamples     = this.loadSamples.bind(this);
+		this.addToOrder      = this.addToOrder.bind(this);
+		this.removeFromOrder = this.removeFromOrder.bind(this);
 
 		// getinitialState
 		this.state = {
@@ -66,6 +68,14 @@ class App extends React.Component {
 		this.setState( { fishes } );
 	}
 
+	removeFish( key ) {
+		const fishes = { ...this.state.fishes };
+		// have to use this, some weird interaction with firebase does not allow the Delete keyword
+		// to successfully delete it
+		fishes[ key ] = null;
+		this.setState( { fishes } );
+	}
+
 	loadSamples () {
 		this.setState( {
 			'fishes' : sampleFishes
@@ -78,6 +88,13 @@ class App extends React.Component {
 		// update or add the number of fish ordered
 		order[ key ] = order[ key ] + 1 || 1;
 		// update state
+		this.setState( { order } );
+	}
+
+	removeFromOrder( key ) {
+		const order = { ...this.state.order };
+		// localstorage, okay to use delete
+		delete order[ key ];
 		this.setState( { order } );
 	}
 
@@ -106,10 +123,12 @@ class App extends React.Component {
 				<Order
 					fishes={ this.state.fishes }
 					order={ this.state.order }
+					removeFromOrder={ this.removeFromOrder }
 					params={ this.props.params }
 				/>
 				<Inventory
 					fishes={ this.state.fishes }
+					removeFish={ this.removeFish }
 					updateFish={ this.updateFish }
 					loadSamples={ this.loadSamples }
 					addFish={ this.addFish }
